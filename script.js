@@ -5,7 +5,7 @@ const myLibrary = [
     title: "To Kill a Mockingbird",
     author: "Harper Lee",
     pages: 281,
-    read: false,
+    read: true,
   },
   {
     title: "1984",
@@ -53,6 +53,9 @@ function refreshLibrary() {
       myLibrary[bookIndex].read +
       "</td>" +
       `<td>
+        <button class="toggle-read" onclick="toggleRead(${bookIndex})">Toggle Read</button>
+      </td>` +
+      `<td>
         <button class="remove-book" onclick="removeBook(${bookIndex})">Remove</button>
       </td>`;
     shelf.appendChild(book);
@@ -72,6 +75,12 @@ function toggleForm() {
     form.style.display = "block";
     formIsVisible = true;
   }
+}
+
+function toggleRead(id) {
+  myLibrary[id].read = myLibrary[id].read ? false : true;
+
+  refreshLibrary();
 }
 
 function removeBook(id) {
