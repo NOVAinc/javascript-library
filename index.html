@@ -12,28 +12,29 @@
     <form id="book-form" action="" style="display: none">
       <div>
         <label for="title">Title</label>
-        <input type="text" id="title" />
+        <input type="text" id="title" required />
       </div>
       <div>
         <label for="author">Author</label>
-        <input type="text" id="author" />
+        <input type="text" id="author" required />
       </div>
       <div>
         <label for="pages">Pages</label>
-        <input type="tel" id="pages" />
+        <input type="tel" id="pages" required />
       </div>
       <fieldset>
         <legend>Read status</legend>
         <div>
           <label for="read">Read</label>
-          <input type="radio" id="read" name="status" value="read" />
+          <input type="radio" id="read" name="status" value="true" required />
         </div>
         <div>
           <label for="unread">Unread</label>
-          <input type="radio" id="unread" name="status" value="unread" />
+          <input type="radio" id="unread" name="status" value="false" />
         </div>
       </fieldset>
+      <button type="button" onclick="addBook()">Add Book</button>
     </form>
-    <button id="add-book" onclick="addBookHandler()">Add Book</button>
+    <button id="add-book" onclick="toggleForm()">New Book</button>
   </body>
 </html>

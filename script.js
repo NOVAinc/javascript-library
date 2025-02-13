@@ -1,4 +1,4 @@
-var visibleForm;
+var formIsVisible;
 
 const myLibrary = [
   {
@@ -29,37 +29,72 @@ function addBookToLibrary(title, author, pages, read) {
 
 const shelf = document.getElementById("shelf");
 
-for (entry of myLibrary) {
-  const book = document.createElement("tr");
+function refreshLibrary() {
+  shelf.innerHTML = "";
 
-  console.table(entry);
+  for (bookIndex in myLibrary) {
+    const book = document.createElement("tr");
 
-  book.innerHTML =
-    "<td>" +
-    entry.title +
-    "</td>" +
-    "<td>" +
-    entry.author +
-    "</td>" +
-    "<td>" +
-    entry.pages +
-    "</td>" +
-    "<td>" +
-    entry.read +
-    "</td>";
-  shelf.appendChild(book);
+    book.setAttribute("data-index", bookIndex);
+
+    console.table(myLibrary[bookIndex]);
+
+    book.innerHTML =
+      "<td>" +
+      myLibrary[bookIndex].title +
+      "</td>" +
+      "<td>" +
+      myLibrary[bookIndex].author +
+      "</td>" +
+      "<td>" +
+      myLibrary[bookIndex].pages +
+      "</td>" +
+      "<td>" +
+      myLibrary[bookIndex].read +
+      "</td>" +
+      `<td>
+        <button class="remove-book" onclick="removeBook(${bookIndex})">Remove</button>
+      </td>`;
+    shelf.appendChild(book);
+  }
 }
 
-function addBookHandler() {
+refreshLibrary();
+
+function toggleForm() {
   const form = document.getElementById("book-form");
   const button = document.getElementById("add-book");
 
-  if (visibleForm) {
-    // GET BOOK DATA
+  if (formIsVisible) {
     form.style.display = "none";
-    visibleForm = false;
+    formIsVisible = false;
   } else {
     form.style.display = "block";
-    visibleForm = true;
+    formIsVisible = true;
   }
+}
+
+function removeBook(id) {
+  myLibrary.splice(id, 1);
+  refreshLibrary();
+}
+
+function clearForm() {
+  const form = document.getElementById("book-form");
+  form.reset();
+}
+
+function addBook() {
+  const title = document.querySelector("input#title");
+  const author = document.querySelector("input#author");
+  const pages = document.querySelector("input#pages");
+  const read = document.querySelector("input:checked");
+
+  addBookToLibrary(title.value, author.value, pages.value, read.value);
+
+  refreshLibrary();
+
+  clearForm();
+
+  toggleForm();
 }
