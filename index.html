@@ -33,8 +33,10 @@
           <input type="radio" id="unread" name="status" value="false" />
         </div>
       </fieldset>
-      <button type="button" onclick="addBook()">Add Book</button>
+      <button type="button" onclick="myLibrary.addBook()">Add Book</button>
     </form>
-    <button id="add-book" onclick="toggleForm()">New Book</button>
+    <button id="add-book" onclick="displayController.toggleForm()">
+      New Book
+    </button>
   </body>
 </html>
