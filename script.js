@@ -1,109 +1,120 @@
-var formIsVisible;
+// Create library object from single-use class
+const myLibrary = new (class Library {
+  #collection = [];
+  get collection() {
+    return this.#collection;
+  }
 
-const myLibrary = [
-  {
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    pages: 281,
-    read: true,
-  },
-  {
-    title: "1984",
-    author: "George Orwell",
-    pages: 328,
-    read: false,
-  },
-];
+  addBookToLibrary(title, author, pages, read) {
+    const book = new Book(title, author, pages, read);
+    this.collection.push(book);
+  }
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-}
+  addBook() {
+    const title = document.querySelector("input#title");
+    const author = document.querySelector("input#author");
+    const pages = document.querySelector("input#pages");
+    const read = document.querySelector("input:checked");
 
-function addBookToLibrary(title, author, pages, read) {
-  const book = new Book(title, author, pages, read);
-  myLibrary.push(book);
-}
+    this.addBookToLibrary(title.value, author.value, pages.value, read.value);
 
-const shelf = document.getElementById("shelf");
+    displayController.refreshLibrary();
 
-function refreshLibrary() {
-  shelf.innerHTML = "";
+    displayController.clearForm();
 
-  for (bookIndex in myLibrary) {
-    const book = document.createElement("tr");
+    displayController.toggleForm();
+  }
 
-    book.setAttribute("data-index", bookIndex);
+  removeBook(id) {
+    this.collection.splice(id, 1);
+    displayController.refreshLibrary();
+  }
 
-    console.table(myLibrary[bookIndex]);
+  toggleRead(id) {
+    this.collection[id].read = this.collection[id].read ? false : true;
 
-    book.innerHTML =
-      "<td>" +
-      myLibrary[bookIndex].title +
-      "</td>" +
-      "<td>" +
-      myLibrary[bookIndex].author +
-      "</td>" +
-      "<td>" +
-      myLibrary[bookIndex].pages +
-      "</td>" +
-      "<td>" +
-      myLibrary[bookIndex].read +
-      "</td>" +
-      `<td>
-        <button class="toggle-read" onclick="toggleRead(${bookIndex})">Toggle Read</button>
-      </td>` +
-      `<td>
-        <button class="remove-book" onclick="removeBook(${bookIndex})">Remove</button>
-      </td>`;
-    shelf.appendChild(book);
+    displayController.refreshLibrary();
+  }
+})();
+
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
   }
 }
 
-refreshLibrary();
+// Create display controller object from sing-euse class
+const displayController = new (class DisplayController {
+  #formIsVisible = false;
+  #shelf = document.getElementById("shelf");
 
-function toggleForm() {
-  const form = document.getElementById("book-form");
-  const button = document.getElementById("add-book");
-
-  if (formIsVisible) {
-    form.style.display = "none";
-    formIsVisible = false;
-  } else {
-    form.style.display = "block";
-    formIsVisible = true;
+  get shelf() {
+    return this.#shelf;
   }
-}
 
-function toggleRead(id) {
-  myLibrary[id].read = myLibrary[id].read ? false : true;
+  get formIsVisible() {
+    return this.#formIsVisible;
+  }
 
-  refreshLibrary();
-}
+  set setFormIsVisible(value) {
+    this.#formIsVisible = value;
+  }
 
-function removeBook(id) {
-  myLibrary.splice(id, 1);
-  refreshLibrary();
-}
+  refreshLibrary() {
+    this.#shelf.innerHTML = "";
 
-function clearForm() {
-  const form = document.getElementById("book-form");
-  form.reset();
-}
+    const collection = myLibrary.collection;
 
-function addBook() {
-  const title = document.querySelector("input#title");
-  const author = document.querySelector("input#author");
-  const pages = document.querySelector("input#pages");
-  const read = document.querySelector("input:checked");
+    for (let bookIndex in collection) {
+      const book = document.createElement("tr");
 
-  addBookToLibrary(title.value, author.value, pages.value, read.value);
+      book.setAttribute("data-index", bookIndex);
 
-  refreshLibrary();
+      console.table(collection[bookIndex]);
 
-  clearForm();
+      book.innerHTML =
+        "<td>" +
+        collection[bookIndex].title +
+        "</td>" +
+        "<td>" +
+        collection[bookIndex].author +
+        "</td>" +
+        "<td>" +
+        collection[bookIndex].pages +
+        "</td>" +
+        "<td>" +
+        collection[bookIndex].read +
+        "</td>" +
+        `<td>
+           <button class="toggle-read" onclick="myLibrary.toggleRead(${bookIndex})">Toggle Read</button>
+         </td>` +
+        `<td>
+           <button class="remove-book" onclick="myLibrary.removeBook(${bookIndex})">Remove</button>
+         </td>`;
+      this.#shelf.appendChild(book);
+    }
+  }
 
-  toggleForm();
-}
+  toggleForm() {
+    const form = document.getElementById("book-form");
+    const button = document.getElementById("add-book");
+
+    if (displayController.formIsVisible) {
+      form.style.display = "none";
+      displayController.setFormIsVisible = false;
+    } else {
+      form.style.display = "block";
+      displayController.setFormIsVisible = true;
+    }
+  }
+
+  clearForm() {
+    const form = document.getElementById("book-form");
+    form.reset();
+  }
+})();
+
+displayController.refreshLibrary();
