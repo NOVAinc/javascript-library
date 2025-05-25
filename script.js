@@ -118,3 +118,37 @@ const displayController = new (class DisplayController {
 })();
 
 displayController.refreshLibrary();
+
+let error = document.querySelector(".error");
+
+let title = document.getElementById("title");
+let author = document.getElementById("author");
+let pages = document.getElementById("pages");
+
+// Verify the title exists
+title.addEventListener("input", () => {
+  if (title.checkValidity()) {
+    return;
+  } else {
+    error.innerText = "You must fill out the title";
+  }
+});
+
+// Verify the author exists
+author.addEventListener("input", () => {
+  if (author.checkValidity()) {
+    return;
+  } else {
+    error.innerText = "You must fill out the author";
+  }
+});
+
+// Verify pages exist and are numeric
+pages.addEventListener("input", () => {
+  if (pages.checkValidity()) {
+    error.innerText = "";
+    return;
+  } else {
+    error.innerText = pages.validationMessage;
+  }
+});
